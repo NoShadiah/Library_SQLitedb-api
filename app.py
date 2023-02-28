@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
 db = SQLAlchemy(app)
 
 # designing my model
-class Users(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     firstname = db.Column(db.String(100), nullable = False, unique=True)
     lastname = db.Column(db.String(100), nullable=False,unique=True)
@@ -41,7 +41,7 @@ def index():
 # Getting all users   
 @app.route('/users', methods=['GET'])
 def get_users():
-    lsUsers=Users.query.all()
+    lsUsers=User.query.all()
 
     output = []
     for user in lsUsers:
@@ -52,21 +52,21 @@ def get_users():
 # Getting a specific user
 @app.route('/users/<id>', methods=['GET'])
 def get_user(id):
-    user = Users.query.get_or_404(id)
+    user = User.query.get_or_404(id)
     return jsonify({f"User {user.id}'s details":{'name': user.firstname, 'lastname':user.lastname, 'contact':user.contact, 'location':user.location }})
 
 # Adding a user
 @app.route('/users/add_user', methods=['POST'])
 def add_user():
-    user = Users(firstname=request.json['firstname'], lastname=request.json['lastname'], contact=request.json['contact'], location=request.json['location'])
+    user = User(firstname=request.json['firstname'], lastname=request.json['lastname'], contact=request.json['contact'], location=request.json['location'])
     db.session.add(user)
     db.session.commit()
-    return f'You successfully added user with is {user.id}'
+    return f'You successfully added user with id {user.id}'
 
 # deleting a user
 @app.route('/users/delete_user/<id>',methods=['DELETE'])
 def delete_user(id):
-    user = Users.query.get(id)
+    user = User.query.get(id)
     # if the deleted user does not exist
     if  user is None:
         return "Error : Not found"
@@ -77,8 +77,11 @@ def delete_user(id):
 # Updating a user
 @app.route('/users/update/<id>', methods=[''])
 def upadate(id):
-    details = Users.query.patch(id)
+    details = User.query.get_or_404(id)
     details.firstname = request.json['firstname']
+    details.laststname = request.json['lastname']
+    details.firstname = request.json['firstname']
+    db.session.add()
     db.session.commit()
     return f'You successfully changed user {details.id} firstname to {details.firstname}'
 
