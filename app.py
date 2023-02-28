@@ -80,9 +80,10 @@ def upadate(id):
     details = User.query.get_or_404(id)
     details.firstname = request.json['firstname']
     details.laststname = request.json['lastname']
-    details.firstname = request.json['firstname']
+    details.contact = request.json['contact']
+    details.location = request.json['location']
     db.session.add()
     db.session.commit()
-    return f'You successfully changed user {details.id} firstname to {details.firstname}'
+    return f'You successfully changed user {details.id} firstname to {details.firstname} {details.lastname}'
 
 
